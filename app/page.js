@@ -1,113 +1,130 @@
-import Image from 'next/image'
+"use client";
+import { useState } from "react";
+import { Button, TextField, CircularProgress, Box } from "@mui/material";
+import axios from "axios";
+import Image from "next/image";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
+import ResultIcon from "./resultIcon";
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [showMessage, setShowMessage] = useState(false); // 메시지 표시 상태
+  const [daysLeft, setDaysLeft] = useState(""); // 남은 일수를 저장
+  const [result, setResult] = useState("");
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+  const color = result === "데이터가 없습니다." ? "#FF0000" : "currentColor";
+
+  const handleClick = async () => {
+    setLoading(true); // 로딩 시작
+    setShowMessage(false); // 요청이 시작될 때 메시지를 숨깁니다.
+
+    try {
+      const response = await axios.get(
+        `https://w4ol755ncxzk7fheqkrxecxyxu0scqpv.lambda-url.ap-northeast-2.on.aws/remainingdays?contact=${inputValue}`,
+        {
+          headers: { Accept: "application/json" },
+        }
+      );
+      // setDaysLeft(response.data['남은기간']); // 응답에서 남은 일수를 가져와 상태에 저장
+
+      setShowMessage(true); // 메시지 표시
+
+      let text = `${response?.data["남은기간"]}일 남았습니다.`;
+      setResult(text);
+    } catch (error) {
+      console.error("Error:", error);
+      setShowMessage(true); // 메시지 표시
+      setResult("데이타가 없습니다.");
+    }
+    setLoading(false); // 로딩 종료
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="f-section-large">
+      <div className="f-container-regular">
+        <div className="f-header-title-wrapper-center">
+          <div className="f-margin-bottom-49">
+            <h1 className="f-h1-heading">남은 서비스 조회하기✔️</h1>
+          </div>
+          <div className="f-margin-bottom-40">
+            <p className="f-paragraph-large">
+              핸드폰 번호를 통해서 남은 일자를 조회하세요
+            </p>
+          </div>
+          <div className="f-header-button-middle">
+            <div className="form-block w-form">
+              <div>
+                <div className="f-field-wrapper-2">
+                  <div className="f-field-icon-wrapper">
+                    <div className="f-field-wrapper-3">
+                      <input
+                        className="f-field-input w-input"
+                        maxLength="256"
+                        name="Input-Field-Help"
+                        data-name="Input Field Help"
+                        placeholder="연락처를 입력하세요"
+                        type="text"
+                        id="Text-Disabled"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-form-done"></div>
+              <div className="w-form-fail"></div>
+            </div>
+            <button
+              className={`f-button-apple w-inline-block ${
+                loading ? "loading" : ""
+              }`}
+              onClick={handleClick}
+              disabled={loading}
+            >
+              {loading ? <div className="loader"></div> : <div>검색</div>}
+            </button>
+            {showMessage && (
+              <>
+                <div className="f-alert-regular">
+
+                    {result === "데이타가 없습니다." ? (
+                      <div></div>
+                    ) : (
+                      <div className="f-alert-success">
+                      <div className="f-alert-icon w-embed">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 22C6.477 22 2 17.523 2 12C2 6.477 6.477 2 12 2C17.523 2 22 6.477 22 12C22 17.523 17.523 22 12 22ZM12 20C14.1217 20 16.1566 19.1571 17.6569 17.6569C19.1571 16.1566 20 14.1217 20 12C20 9.87827 19.1571 7.84344 17.6569 6.34315C16.1566 4.84285 14.1217 4 12 4C9.87827 4 7.84344 4.84285 6.34315 6.34315C4.84285 7.84344 4 9.87827 4 12C4 14.1217 4.84285 16.1566 6.34315 17.6569C7.84344 19.1571 9.87827 20 12 20V20ZM11.003 16L6.76 11.757L8.174 10.343L11.003 13.172L16.659 7.515L18.074 8.929L11.003 16Z"
+                            fill="currentColor"
+                          ></path>
+                        </svg>
+                      </div>
+                      </div>
+                    )}
+
+                  <div className="f-alert-content">
+                    <div className="centered-text">
+                      <p>{result}</p>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }

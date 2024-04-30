@@ -11,6 +11,8 @@
   --flowui-component-library--primary-base: #642eff;
   --flowui-component-library--success-base: #0ebc6e;
   --flowui-component-library--gray-100: #f7f9fd;
+  --white: white;
+  --black: black;
 }
 
 .f-paragraph-small {
@@ -273,7 +275,8 @@
 .f-header-button-middle {
   grid-column-gap: 16px;
   grid-row-gap: 16px;
-  flex-wrap: wrap;
+  flex-flow: column;
+  justify-content: center;
   align-items: center;
   display: flex;
 }
@@ -287,7 +290,7 @@
   letter-spacing: -.04em;
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 64px;
+  font-size: 48px;
   line-height: 1.2;
 }
 
@@ -340,7 +343,7 @@
 }
 
 .f-field-input-icon-r-2:focus {
-  border-color: var(--flowui-component-library--gray-400);
+  border-color: var(--flowui-component-library--gray-900);
 }
 
 .f-field-input-icon-r-2::placeholder {
@@ -383,7 +386,8 @@
 
 .f-field-wrapper-2 {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
 }
 
 .f-icon-regular {
@@ -549,11 +553,119 @@
   background-color: var(--flowui-component-library--white);
   color: var(--flowui-component-library--gray-900);
   border-radius: 8px;
-  align-items: flex-start;
+  align-items: center;
   max-width: 340px;
   padding: 16px 24px 16px 16px;
   display: flex;
   box-shadow: 56px 0 80px -24px rgba(57, 59, 106, .08);
+}
+
+.f-button-primary-2 {
+  background-color: var(--flowui-component-library--gray-900);
+  color: #fff;
+  letter-spacing: -.02px;
+  white-space: nowrap;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color .3s;
+  display: flex;
+}
+
+.f-button-primary-2:hover {
+  background-color: var(--flowui-component-library--gray-700);
+}
+
+.f-button-icon {
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  transition: color .2s;
+  display: flex;
+}
+
+.f-button-apple {
+  grid-column-gap: 6px;
+  grid-row-gap: 6px;
+  background-color: var(--flowui-component-library--gray-900);
+  color: var(--flowui-component-library--white);
+  
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  
+  
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  text-decoration: none;
+  transition: background-color .3s;
+  display: flex;
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin:0;
+}
+.f-button-apple.loading {
+  background-color: #ccc; /* 로딩 중 색상 */
+}
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.f-field-caption {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.f-field-input {
+  border: 1px solid var(--flowui-component-library--grey-300);
+  text-align: center;
+  border-radius: 8px;
+  min-height: 48px;
+  margin-bottom: 0;
+  padding: 12px 16px;
+  transition: all .2s;
+}
+
+.f-field-input:focus {
+  border-color: var(--flowui-component-library--gray-400);
+}
+
+.f-field-input::placeholder {
+  color: var(--flowui-component-library--gray-500);
+}
+
+.f-field-label-2 {
+  color: var(--flowui-component-library--gray-900);
+  letter-spacing: -.01em;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.f-field-wrapper-3 {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 @media screen and (max-width: 991px) {
@@ -598,7 +710,7 @@
   }
 
   .f-field-wrapper-2 {
-    width: 50%;
+    width: 100%;
   }
 
   .f-paragraph-regular.f-text-weight-medium {
@@ -608,7 +720,8 @@
   }
 
   .f-alert-content {
-    align-self: center;
+    display: block;
+    align-items: center;
   }
 }
 
@@ -628,7 +741,7 @@
 
   .f-h1-heading {
     margin-top: 0;
-    font-size: 48px;
+    font-size: 32px;
   }
 
   .f-section-large {
@@ -661,4 +774,25 @@
     transition-property: none;
     display: flex;
   }
+}
+.centered-text {
+  display: flex; /* Flexbox를 사용하여 아이템들을 유연하게 배치 */
+  align-items: center; /* 세로 방향 중앙 정렬 */
+  justify-content: center; /* 가로 방향 중앙 정렬 */
+  height: 100%; /* 부모 컨테이너의 높이를 화면 높이의 100%로 설정 */
+  text-align: center; /* 텍스트 가로 정렬 */
+}
+
+.f-alert-content{
+  display: flex; /* Flexbox를 사용하여 아이템들을 유연하게 배치 */
+  align-items: center; /* 세로 방향 중앙 정렬 */
+  justify-content: center; /* 가로 방향 중앙 정렬 */
+  height: 100%; /* 부모 컨테이너의 높이를 화면 높이의 100%로 설정 */
+  text-align: center; /* 텍스트 가로 정렬 */
+}
+.f-field-input.w-input:focus {
+  border-color: #160042; /* 포커스 시 테두리 색상 변경 */
+  outline: none; /* 기본 브라우저 포커스 스타일 제거 */
+  border-width: 2px; /* 포커스 시 테두리 두께 변경 */
+
 }
