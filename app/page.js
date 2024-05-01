@@ -78,7 +78,7 @@ export default function Home() {
       <div className="f-container-regular">
         <div className="f-header-title-wrapper-center">
           <div className="f-margin-bottom-49">
-            <h1 className="f-h1-heading">남은 서비스 기간<br></br>조회하기✔️</h1>
+            <h1 className="f-h1-heading">남은 서비스 기간<br></br>조회하기✅</h1>
           </div>
           <div className="f-margin-bottom-40">
             <p className="f-paragraph-large">
