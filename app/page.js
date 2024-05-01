@@ -8,6 +8,28 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ResultIcon from "./resultIcon";
 
+
+// export const metadata = {
+//   icons:{
+//     icon:'images/icon.png'
+//   },
+//   title: '체험단시대 남은기간 조회하기',
+//   openGraph: {
+//     title: '체험단시대 남은기간 조회하기',
+//     url: 'restday-next.vercel.app',
+//     siteName: 'restday-next.vercel.app',
+//     images: [
+//       {
+//         url: 'https://exgen.s3.ap-northeast-2.amazonaws.com/icon.png', // Must be an absolute URL
+//         width: 800,
+//         height: 600,
+//       }
+//     ],
+//     locale: 'ko_Kr',
+//     type: 'website',
+//   },
+// }
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -22,6 +44,13 @@ export default function Home() {
   const handleClick = async () => {
     setLoading(true); // 로딩 시작
     setShowMessage(false); // 요청이 시작될 때 메시지를 숨깁니다.
+
+    if (!inputValue.trim()) { // inputValue가 비어 있는 경우를 검사합니다.
+      setResult("핸드폰번호를 입력하세요"); // 경고 메시지를 setResult를 통해 저장
+      setShowMessage(true); // 메시지를 보여줍니다.
+      setLoading(false); // 로딩 종료
+      return; // 함수 실행을 여기서 종료합니다.
+    }
 
     try {
       const response = await axios.get(

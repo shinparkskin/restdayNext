@@ -8,10 +8,23 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: "남은 서비스 조회하기",
-  description: "서비스 기간 조회하세요",
   icons:{
-    icon:'images/logo.png'
+    icon:'images/icon.png'
+  },
+  title: '체험단시대 남은기간 조회하기',
+  openGraph: {
+    title: '체험단시대 남은기간 조회하기',
+    url: 'restday-next.vercel.app',
+    siteName: 'restday-next.vercel.app',
+    images: [
+      {
+        url: 'https://exgen.s3.ap-northeast-2.amazonaws.com/icon.png', // Must be an absolute URL
+        width: 800,
+        height: 600,
+      }
+    ],
+    locale: 'ko_Kr',
+    type: 'website',
   },
 };
 
