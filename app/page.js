@@ -1,55 +1,57 @@
 "use client";
 import { useState } from "react";
-import { Button, TextField, CircularProgress, Box } from "@mui/material";
+
 import axios from "axios";
-import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import ResultIcon from "./resultIcon";
+import { Checkbox } from "@nextui-org/react";
+import { Input, Button } from "@nextui-org/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Divider,
+  Link,
+  Image,
+} from "@nextui-org/react";
 
-
-// export const metadata = {
-//   icons:{
-//     icon:'images/icon.png'
-//   },
-//   title: '체험단시대 남은기간 조회하기',
-//   openGraph: {
-//     title: '체험단시대 남은기간 조회하기',
-//     url: 'restday-next.vercel.app',
-//     siteName: 'restday-next.vercel.app',
-//     images: [
-//       {
-//         url: 'https://exgen.s3.ap-northeast-2.amazonaws.com/icon.png', // Must be an absolute URL
-//         width: 800,
-//         height: 600,
-//       }
-//     ],
-//     locale: 'ko_Kr',
-//     type: 'website',
-//   },
-// }
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/react";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
   const [showMessage, setShowMessage] = useState(false); // 메시지 표시 상태
   const [daysLeft, setDaysLeft] = useState(""); // 남은 일수를 저장
   const [result, setResult] = useState("");
+  const [resultDate, setResultDate] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
   const color = result === "데이터가 없습니다." ? "#FF0000" : "currentColor";
 
   const handleClick = async () => {
+    setIsError(false);
     setLoading(true); // 로딩 시작
-    setShowMessage(false); // 요청이 시작될 때 메시지를 숨깁니다.
 
-    if (!inputValue.trim()) { // inputValue가 비어 있는 경우를 검사합니다.
-      setResult("핸드폰번호를 입력하세요"); // 경고 메시지를 setResult를 통해 저장
-      setShowMessage(true); // 메시지를 보여줍니다.
+    if (inputValue === "") {
+      onOpen();
+      setIsError(true);
+      setErrorMessage("핸드폰 번호를 입력해주세요");
       setLoading(false); // 로딩 종료
-      return; // 함수 실행을 여기서 종료합니다.
+      return;
     }
 
     try {
@@ -59,101 +61,120 @@ export default function Home() {
           headers: { Accept: "application/json" },
         }
       );
-      // setDaysLeft(response.data['남은기간']); // 응답에서 남은 일수를 가져와 상태에 저장
 
-      setShowMessage(true); // 메시지 표시
+      console.log(response.data);
+      if (parseInt(response?.data["남은기간"]) < 0) {
+        onOpen();
+        setIsError(true);
+        setErrorMessage("서비스가 만료되었습니다. 재등록 부탁드려요❤️");
+        setLoading(false); // 로딩 종료
+        return;
+      }
 
-      let text = `${response?.data["남은기간"]}일 남았습니다.`;
-      setResult(text);
+      onOpen();
+      setResult(response?.data["남은기간"]);
+      setResultDate(response?.data["만료"]);
     } catch (error) {
-      console.error("Error:", error);
-      setShowMessage(true); // 메시지 표시
-      setResult("데이타가 없습니다.");
+      onOpen();
+      setIsError(true);
+      setErrorMessage("회원 명단에 없습니다.");
+      setLoading(false); // 로딩 종료
     }
     setLoading(false); // 로딩 종료
   };
 
   return (
-    <div className="f-section-large">
-      <div className="f-container-regular">
-        <div className="f-header-title-wrapper-center">
-          <div className="f-margin-bottom-49">
-            <h1 className="f-h1-heading">남은 서비스 기간<br></br>조회하기✅</h1>
+    <section className="bg-white dark:bg-gray-900 flex flex-col items-center justify-center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 justify-center items-center text-2xl">
+                안내
+              </ModalHeader>
+              <ModalBody className="flex flex-col gap-1 justify-center items-center text-lg font-bold">
+                {isError ? (
+                  <p>{errorMessage}</p>
+                ) : (
+                  <>
+                    <p>마감일은 {resultDate}로,</p>
+                    <p>총 {result}일 남았습니다!</p>
+                  </>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+        <div className="flex flex-col max-w-screen-md gap-y-4 justify-center items-center">
+          <h2 className="text-center mb-4 text-3xl md:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+            체험단시대와 함께 하는 남은 기간입니다 😍
+          </h2>
+          <p className=" text-gray-500 sm:text-xl  text-center font-bold text-lg">
+            동명이인이 많아<br></br>
+            핸드폰 번호로 조회 도와드릴께요 ❤️
+          </p>
+
+          <div className="flex justify-center items-center w-full md:w-1/2 flex-wrap md:flex-nowrap gap-4">
+            <Input
+              type="tel"
+              label="phone"
+              value={inputValue}
+              onChange={handleInputChange}
+            />
           </div>
-          <div className="f-margin-bottom-40">
-            <p className="f-paragraph-large">
-              핸드폰 번호를 통해서<br></br> 잔여 일자를 조회하세요
-            </p>
-          </div>
-          <div className="f-header-button-middle">
-            <div className="form-block w-form">
-              <div>
-                <div className="f-field-wrapper-2">
-                  <div className="f-field-icon-wrapper">
-                    <div className="f-field-wrapper-3">
-                      <input
-                        className="f-field-input w-input"
-                        maxLength="256"
-                        name="Input-Field-Help"
-                        data-name="Input Field Help"
-                        placeholder="연락처를 입력하세요"
-                        type="text"
-                        id="Text-Disabled"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="w-form-done"></div>
-              <div className="w-form-fail"></div>
-            </div>
-            <button
-              className={`f-button-apple w-inline-block ${
-                loading ? "loading" : ""
-              }`}
+          <div className="my-5">
+            <Button
               onClick={handleClick}
-              disabled={loading}
+              color="primary"
+              size="lg"
+              isLoading={loading}
             >
-              {loading ? <div className="loader"></div> : <div>검색</div>}
-            </button>
-            {showMessage && (
-              <>
-                <div className="f-alert-regular">
-
-                    {result === "데이타가 없습니다." ? (
-                      <div></div>
-                    ) : (
-                      <div className="f-alert-success">
-                      <div className="f-alert-icon w-embed">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12 22C6.477 22 2 17.523 2 12C2 6.477 6.477 2 12 2C17.523 2 22 6.477 22 12C22 17.523 17.523 22 12 22ZM12 20C14.1217 20 16.1566 19.1571 17.6569 17.6569C19.1571 16.1566 20 14.1217 20 12C20 9.87827 19.1571 7.84344 17.6569 6.34315C16.1566 4.84285 14.1217 4 12 4C9.87827 4 7.84344 4.84285 6.34315 6.34315C4.84285 7.84344 4 9.87827 4 12C4 14.1217 4.84285 16.1566 6.34315 17.6569C7.84344 19.1571 9.87827 20 12 20V20ZM11.003 16L6.76 11.757L8.174 10.343L11.003 13.172L16.659 7.515L18.074 8.929L11.003 16Z"
-                            fill="currentColor"
-                          ></path>
-                        </svg>
-                      </div>
-                      </div>
-                    )}
-
-                  <div className="f-alert-content">
-                    <div className="centered-text">
-                      <p>{result}</p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+              조회하기
+            </Button>
           </div>
         </div>
       </div>
-    </div>
+      <Card className="mx-8 max-w-[400px]">
+        <CardHeader className="flex gap-3 items-center">
+          <Image
+            alt="nextui logo"
+            height={40}
+            radius="sm"
+            src="/images/logoex.png"
+            width={40}
+          />
+          <div className="flex flex-col justify-center items-center font-bold">
+            체험단시대
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody className="py-2 flex  ">
+          수정사항은 상담 카톡에 아래처럼 말씀주시면 바로 반영 해드릴께요!
+        </CardBody>
+        <Divider />
+        <CardFooter>
+          마감일이 5.27로 되어있는데 ~이래서 5.30이 맞아요. 확인해주세요!!
+        </CardFooter>
+      </Card>
+      <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+        <div class="mx-auto max-w-screen-sm text-center">
+          <h2 class="mb-4 text-2xl tracking-tight font-extrabold leading-tight text-gray-900 dark:text-white">
+            평생 함께 해주실 거죠? 🙏
+          </h2>
+        </div>
+      </div>
+    </section>
   );
 }
