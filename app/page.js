@@ -168,6 +168,44 @@ export default function Home() {
           마감일이 5.27로 되어있는데 ~이래서 5.30이 맞아요. 확인해주세요!!
         </CardFooter>
       </Card>
+      <div class="py-8  mx-auto max-w-screen-xl sm:py-16 lg:px-6 gap-x-4 grid grid-cols-1 md:grid-cols-2">
+        <Link target="_blank" href='https://www.youtube.com/@user-wb6rf5ie2z'>
+          <Image
+            isBlurred
+            width={200}
+            src="/images/1.jpg"
+            alt="NextUI Album Cover"
+            className=""
+          />
+        </Link>
+        <Link target="_blank" href='https://www.instagram.com/blinee.moim'>
+          <Image
+            isBlurred
+            width={200}
+            src="/images/2.jpg"
+            alt="NextUI Album Cover"
+            className=""
+          />
+        </Link>
+        <Link target="_blank" href='https://blog.naver.com/shinparkskin'>
+          <Image
+            isBlurred
+            width={200}
+            src="/images/3.jpg"
+            alt="NextUI Album Cover"
+            className=""
+          />
+        </Link>
+        <Link target="_blank" href='https://cafe.naver.com/katorifea'>
+          <Image
+            isBlurred
+            width={200}
+            src="/images/4.jpg"
+            alt="NextUI Album Cover"
+            className=""
+          />
+        </Link>
+      </div>
       <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-sm text-center">
           <h2 class="mb-4 text-2xl tracking-tight font-extrabold leading-tight text-gray-900 dark:text-white">
