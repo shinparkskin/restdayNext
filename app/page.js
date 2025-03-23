@@ -178,7 +178,7 @@ export default function Home() {
             className=""
           />
         </Link>
-        <Link target="_blank" href='https://www.instagram.com/blinee.moim'>
+        <Link target="_blank" href='https://www.instagram.com/blog_city.ceo/'>
           <Image
             isBlurred
             width={200}
@@ -187,7 +187,7 @@ export default function Home() {
             className=""
           />
         </Link>
-        <Link target="_blank" href='https://blog.naver.com/shinparkskin'>
+        {/* <Link target="_blank" href='https://blog.naver.com/shinparkskin'>
           <Image
             isBlurred
             width={200}
@@ -195,7 +195,7 @@ export default function Home() {
             alt="NextUI Album Cover"
             className=""
           />
-        </Link>
+        </Link> */}
         <Link target="_blank" href='https://cafe.naver.com/katorifea'>
           <Image
             isBlurred
