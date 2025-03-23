@@ -73,7 +73,7 @@ export default function Home() {
 
       onOpen();
       setResult(response?.data["남은기간"]);
-      setResultDate(response?.data["만료"]);
+      setResultDate(response?.data["마감"]);
     } catch (error) {
       onOpen();
       setIsError(true);
